@@ -24,10 +24,10 @@ local LocalPlayer = Players.LocalPlayer
 
 -- Animasi fishing
 local fishingAnimCast = Instance.new("Animation")
-fishingAnimCast.AnimationId = "rbxassetid://96586569072385" -- animasi cast
+fishingAnimCast.AnimationId = "rbxassetid://134965425664034" -- animasi cast
 
 local fishingAnimIdle = Instance.new("Animation")
-fishingAnimIdle.AnimationId = "rbxassetid://134965425664034" -- animasi idle / reel
+fishingAnimIdle.AnimationId = "rbxassetid://96586569072385" -- animasi idle / reel
 
 local animTrack = nil
 
@@ -36,18 +36,10 @@ local NetPath = nil
 local EquipTool, ChargeFishingRod, RequestFishing, FishingCompleted, FishObtainedNotification, ReplicateTextEffect, CancelFishingInputs, EquipItem, EquipBait
 
 
-local function playAnimation(animator, animation, looped)
+local function playAnimation(animator, animation)
     if not animator or not animation then return end
-    looped = looped or false
-
-    if animTrack and animTrack.IsPlaying and animTrack.Animation ~= animation then
-        animTrack:Stop()
-    elseif animTrack and animTrack.IsPlaying then
-        return animTrack
-    end
-
+    if animTrack then animTrack:Stop() end
     animTrack = animator:LoadAnimation(animation)
-    animTrack.Looped = looped
     animTrack:Play()
     return animTrack
 end
@@ -353,31 +345,29 @@ end
 -- Handle text effect
 function AutoFishV2:HandleTextEffect(data)
     if not data or not data.TextData then return end
+
+    -- Pastikan efek teks attach ke karakter kita
     if not LocalPlayer.Character or not LocalPlayer.Character.Head then return end
     if data.TextData.AttachTo ~= LocalPlayer.Character.Head then return end
 
+    -- Ambil warna teks
     local textColor = data.TextData.TextColor
     if not textColor or not textColor.Keypoints then return end
-    local color = textColor.Keypoints[1].Value
+    local keypoint = textColor.Keypoints[1]
+    if not keypoint then return end
+
+    local color = keypoint.Value
     local rarity = self:GetFishRarity(color)
 
-    local char = LocalPlayer.Character
-    local humanoid = char:WaitForChild("Humanoid")
-    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-
     if rarity == "Rare" then
-        logger:info("Detected Rare fish - cancelling with animation")
-        waitingForTextEffect = false
-        if animTrack then animTrack:Stop() end
-        -- Mainkan animasi cancel
-        -- Buat animasi cancel sendiri atau pakai idle sementara
-        playAnimation(animator, fishingAnimIdle, false) 
-        self:CancelFishing()
+        logger:info("Detected Rare fish - canceling fishing")
+        self:CancelFishing() -- hanya Rare yang dicancel
     else
         logger:info("Common/Uncommon fish detected - starting spam")
-        waitingForTextEffect = false
-        self:StartCompletionSpam()
+        self:StartCompletionSpam() -- Uncommon & Common tetap ditangkap
     end
+
+    waitingForTextEffect = false
 end
 
 -- Get fish rarity from color
@@ -454,17 +444,17 @@ function AutoFishV2:ExecuteFishingSequence()
     -- Step 2: Charge rod
     if not self:ChargeRod(FAST_CONFIG.chargeTime) then return false end
 
-    -- Step 3: Cast rod + animasi cast
-    playAnimation(animator, fishingAnimCast, false)
+    -- Step 3: Cast rod + animasi
+    playAnimation(animator, fishingAnimCast)
     if not self:CastRod() then return false end
 
-    -- Step 4: Setelah cast, animasi idle loop sampai fish didapat
+    -- Step 4: Saat menunggu text effect / spam, mainkan animasi idle
+    playAnimation(animator, fishingAnimIdle)
     waitingForTextEffect = true
-    playAnimation(animator, fishingAnimIdle, true)
     logger:info("Waiting for text effect...")
 
     -- Timeout untuk text effect
-    task.defer(function()
+    spawn(function()
         task.wait(FAST_CONFIG.textEffectTimeout)
         if waitingForTextEffect then
             logger:warn("Text effect timeout - starting spam anyway")
