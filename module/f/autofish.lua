@@ -16,8 +16,14 @@ local logger = _G.Logger and _G.Logger.new("AutoFish") or {
 -- ===========================================================
 -- [ANIMASI] RBX Asset ID
 -- ===========================================================
-local CAST_ANIM_ID = "rbxassetid://134965425664034" -- cast/reel
-local IDLE_ANIM_ID = "rbxassetid://96586569072385" -- idle
+-- ===========================================================
+-- [ANIMASI] RBX Asset ID
+-- ===========================================================
+local CAST_ANIM_ID     = "rbxassetid://134965425664034" -- Cast / Reel
+local IDLE_ANIM_ID     = "rbxassetid://96586569072385" -- Idle
+local REEL_ANIM_ID     = "rbxassetid://123456789012345" -- Reel / Tug (buat contoh)
+local MINIGAME_ANIM_ID = "rbxassetid://234567890123456" -- Slow mode tap-tap
+
 
 -- Services
 local Players = game:GetService("Players")
@@ -223,7 +229,7 @@ function AutoFishFeature:SpamFishingLoop()
     end)
 end
 
--- Execute spam-based fishing sequence
+-- Execute spam-based fishing sequence with delays & animations
 function AutoFishFeature:ExecuteSpamFishingSequence()
     local config = FISHING_CONFIGS[currentMode]
     
@@ -232,25 +238,36 @@ function AutoFishFeature:ExecuteSpamFishingSequence()
         return false
     end
 
-    -- [ANIMASI] Cast rod
+    -- Step 2: Cast rod
     self:PlayAnimation(CAST_ANIM_ID)
-    task.wait(0.4)
+    task.wait(0.2) -- sesuai durasi cast
 
-    -- Step 2: Charge rod
+    -- Step 3: Charge rod
     if not self:ChargeRod(config.chargeTime) then
         return false
     end
+    task.wait(config.chargeTime) -- delay sesuai charge
+
+    -- Step 4: Reel animation / tug
+    self:PlayAnimation(REEL_ANIM_ID)
     
-    -- Step 3: Cast rod (remote)
+    -- Step 5: Cast rod (remote)
     if not self:CastRod() then
         return false
     end
 
-    -- Step 4: Start completion spam
+    -- Step 6: Slow mode minigame animation
+    if currentMode == "Slow" and not config.skipMinigame then
+        self:PlayAnimation(MINIGAME_ANIM_ID)
+        task.wait(config.minigameDuration)
+    end
+
+    -- Step 7: Start completion spam
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
 
-    -- [ANIMASI] Idle setelah selesai
+    -- Step 8: Idle setelah selesai
     self:PlayAnimation(IDLE_ANIM_ID)
+    task.wait(0.2) -- delay idle
 
     return true
 end
