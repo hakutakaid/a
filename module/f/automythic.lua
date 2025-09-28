@@ -14,7 +14,7 @@ local logger = _G.Logger and _G.Logger.new("AutoFishV3") or {
 }
 
 -- Load InventoryWatcher
-local InventoryWatcher = _G.InventoryWatcher or loadstring(game:HttpGet("https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/utils/fishit/inventdetect.lua"))()
+local InventoryWatcher = _G.InventoryWatcher or loadstring(game:HttpGet("https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/utils/fishit/inventdetect.lua"))()
 
 -- Services
 local Players = game:GetService("Players")

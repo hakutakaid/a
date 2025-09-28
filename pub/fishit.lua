@@ -1,4 +1,4 @@
-local Logger       = loadstring(game:HttpGet("https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/utils/logger.lua"))()
+local Logger       = loadstring(game:HttpGet("https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/utils/logger.lua"))()
 
 -- FOR PRODUCTION: 
 Logger.disableAll()
@@ -415,7 +415,7 @@ _G.NetPath = NetPath
 -- Load InventoryWatcher globally for features that need it
 _G.InventoryWatcher = nil
 pcall(function()
-    _G.InventoryWatcher = loadstring(game:HttpGet("https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/utils/fishit/inventdetect.lua"))()
+    _G.InventoryWatcher = loadstring(game:HttpGet("https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/utils/fishit/inventdetect.lua"))()
 end)
 
 --- === HELPERS FOR PLAYER INFO === ---
@@ -456,29 +456,29 @@ FeatureManager.LoadedCount = 0
 FeatureManager.IsReady = false
 
 local FEATURE_URLS = {
-    AutoFish           = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autofish.lua",
-    AutoSellFish       = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autosellfish.lua",
-    AutoTeleportIsland = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoteleportisland.lua",
-    FishWebhook        = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/fishwebhook.lua",
-    AutoBuyWeather     = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autobuyweather.lua",
-    AutoBuyBait        = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autobuybait.lua",
-    AutoBuyRod         = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autobuyrod.lua",
-    AutoTeleportEvent  = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoteleportevent.lua",
-    AutoGearOxyRadar   = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autogearoxyradar.lua",
-    AntiAfk            = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/antiafk.lua",
-    AutoEnchantRod     = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoenchantrod.lua",
-    AutoFavoriteFish   = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autofavoritefish.lua",
-    AutoTeleportPlayer = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoteleportplayer.lua",
-    BoostFPS           = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/boostfps.lua",
-    AutoSendTrade      = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autosendtrade.lua",
-    AutoAcceptTrade    = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoaccepttrade.lua",
-    SavePosition       = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/saveposition.lua",
-    PositionManager    = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/positionmanager.lua",
-    CopyJoinServer     = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/copyjoinserver.lua",
-    AutoReconnect      = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoreconnect.lua",
-    AutoReexec         = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/autoreexec.lua",
-    PlayerEsp          = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/playeresp.lua",
-    InfEnchant         = "https://raw.githubusercontent.com/c3iv3r/a/refs/heads/main/module/f-pub/infenchant.lua"
+    AutoFish           = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autofish.lua",
+    AutoSellFish       = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autosellfish.lua",
+    AutoTeleportIsland = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoteleportisland.lua",
+    FishWebhook        = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/fishwebhook.lua",
+    AutoBuyWeather     = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autobuyweather.lua",
+    AutoBuyBait        = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autobuybait.lua",
+    AutoBuyRod         = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autobuyrod.lua",
+    AutoTeleportEvent  = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoteleportevent.lua",
+    AutoGearOxyRadar   = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autogearoxyradar.lua",
+    AntiAfk            = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/antiafk.lua",
+    AutoEnchantRod     = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoenchantrod.lua",
+    AutoFavoriteFish   = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autofavoritefish.lua",
+    AutoTeleportPlayer = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoteleportplayer.lua",
+    BoostFPS           = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/boostfps.lua",
+    AutoSendTrade      = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autosendtrade.lua",
+    AutoAcceptTrade    = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoaccepttrade.lua",
+    SavePosition       = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/saveposition.lua",
+    PositionManager    = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/positionmanager.lua",
+    CopyJoinServer     = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/copyjoinserver.lua",
+    AutoReconnect      = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoreconnect.lua",
+    AutoReexec         = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/autoreexec.lua",
+    PlayerEsp          = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/playeresp.lua",
+    InfEnchant         = "https://raw.githubusercontent.com/hakutakaid/a/refs/heads/main/module/f-pub/infenchant.lua"
 }
 
 -- Load single feature synchronously
