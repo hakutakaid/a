@@ -13,6 +13,12 @@ local logger = _G.Logger and _G.Logger.new("AutoFish") or {
     error = function() end
 }
 
+-- ===========================================================
+-- [ANIMASI] RBX Asset ID
+-- ===========================================================
+local CAST_ANIM_ID = "rbxassetid://134965425664034" -- cast/reel
+local IDLE_ANIM_ID = "rbxassetid://96586569072385" -- idle
+
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")  
@@ -128,28 +134,30 @@ end
 -- Stop fishing
 function AutoFishFeature:Stop()
     if not isRunning then return end
-    
     isRunning = false
     fishingInProgress = false
     spamActive = false
     completionCheckActive = false
     fishCaughtFlag = false
     
-    if connection then
-        connection:Disconnect()
-        connection = nil
+    if connection then connection:Disconnect() connection = nil end
+    if spamConnection then spamConnection:Disconnect() spamConnection = nil end
+    if fishObtainedConnection then fishObtainedConnection:Disconnect() fishObtainedConnection = nil end
+
+    -- Stop semua animasi
+    local char = LocalPlayer.Character
+    if char then
+        local humanoid = char:FindFirstChild("Humanoid")
+        if humanoid then
+            local animator = humanoid:FindFirstChildOfClass("Animator")
+            if animator then
+                for _, t in pairs(animator:GetPlayingAnimationTracks()) do
+                    t:Stop()
+                end
+            end
+        end
     end
-    
-    if spamConnection then
-        spamConnection:Disconnect()
-        spamConnection = nil
-    end
-    
-    if fishObtainedConnection then
-        fishObtainedConnection:Disconnect()
-        fishObtainedConnection = nil
-    end
-    
+
     logger:info("Stopped SPAM method")
 end
 
@@ -223,22 +231,27 @@ function AutoFishFeature:ExecuteSpamFishingSequence()
     if not self:EquipRod(config.rodSlot) then
         return false
     end
-    
-    task.wait(0.1)
+
+    -- [ANIMASI] Cast rod
+    self:PlayAnimation(CAST_ANIM_ID)
+    task.wait(0.4)
 
     -- Step 2: Charge rod
     if not self:ChargeRod(config.chargeTime) then
         return false
     end
     
-    -- Step 3: Cast rod
+    -- Step 3: Cast rod (remote)
     if not self:CastRod() then
         return false
     end
 
-    -- Step 4: Start completion spam with mode-specific behavior
+    -- Step 4: Start completion spam
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
-    
+
+    -- [ANIMASI] Idle setelah selesai
+    self:PlayAnimation(IDLE_ANIM_ID)
+
     return true
 end
 
@@ -438,6 +451,31 @@ function AutoFishFeature:Cleanup()
     self:Stop()
     controls = {}
     remotesInitialized = false
+end
+
+-- ===========================================================
+-- [ANIMASI] Helper play animation
+-- ===========================================================
+function AutoFishFeature:PlayAnimation(animId)
+    local char = LocalPlayer.Character
+    if not char then return end
+    local humanoid = char:FindFirstChild("Humanoid")
+    if not humanoid then return end
+
+    local animator = humanoid:FindFirstChildOfClass("Animator")
+        or Instance.new("Animator", humanoid)
+
+    -- Stop semua track
+    for _, t in pairs(animator:GetPlayingAnimationTracks()) do
+        t:Stop()
+    end
+
+    -- Play animation baru
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animId
+    local track = animator:LoadAnimation(animation)
+    track:Play()
+    return track
 end
 
 return AutoFishFeature
