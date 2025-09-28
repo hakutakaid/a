@@ -24,10 +24,10 @@ local LocalPlayer = Players.LocalPlayer
 
 -- Animasi fishing
 local fishingAnimCast = Instance.new("Animation")
-fishingAnimCast.AnimationId = "rbxassetid://134965425664034" -- animasi cast
+fishingAnimCast.AnimationId = "rbxassetid://96586569072385" -- animasi cast
 
 local fishingAnimIdle = Instance.new("Animation")
-fishingAnimIdle.AnimationId = "rbxassetid://96586569072385" -- animasi idle / reel
+fishingAnimIdle.AnimationId = "rbxassetid://134965425664034" -- animasi idle / reel
 
 local animTrack = nil
 
