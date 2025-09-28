@@ -85,11 +85,6 @@ local starterRodUUID = nil
 
 -- Fish rarity colors
 local FISH_COLORS = {
-    -- Uncommon = {
-        -- r = 0.76470589637756,
-        -- g = 1,
-        -- b = 0.33333334326744
-    -- },
     Rare = {
         r = 0.33333334326744,
         g = 0.63529413938522,
@@ -99,8 +94,8 @@ local FISH_COLORS = {
 
 -- Fast mode config
 local FAST_CONFIG = {
-    chargeTime = 2,
-    waitBetween = 1,
+    chargeTime = 1.0,
+    waitBetween = 0,
     rodSlot = 1,
     spamDelay = 0.05,
     maxSpamTime = 30,
@@ -350,53 +345,44 @@ end
 -- Handle text effect
 function AutoFishV2:HandleTextEffect(data)
     if not data or not data.TextData then return end
-    
-    -- Check if effect is attached to our character
+
+    -- Pastikan efek teks attach ke karakter kita
     if not LocalPlayer.Character or not LocalPlayer.Character.Head then return end
     if data.TextData.AttachTo ~= LocalPlayer.Character.Head then return end
-    
-    -- Check text color for rarity
+
+    -- Ambil warna teks
     local textColor = data.TextData.TextColor
     if not textColor or not textColor.Keypoints then return end
-    
     local keypoint = textColor.Keypoints[1]
     if not keypoint then return end
-    
+
     local color = keypoint.Value
     local rarity = self:GetFishRarity(color)
-    
-    if rarity then
-        logger:info("Detected", rarity, "fish - canceling fishing")
-        self:CancelFishing()
+
+    if rarity == "Rare" then
+        logger:info("Detected Rare fish - canceling fishing")
+        self:CancelFishing() -- hanya Rare yang dicancel
     else
-        logger:info("Common fish detected - starting spam")
-        self:StartCompletionSpam()
+        logger:info("Common/Uncommon fish detected - starting spam")
+        self:StartCompletionSpam() -- Uncommon & Common tetap ditangkap
     end
-    
+
     waitingForTextEffect = false
 end
 
 -- Get fish rarity from color
 function AutoFishV2:GetFishRarity(color)
-    local threshold = 0.01
-    
-    -- Check Uncommon
-    local uncommonColor = FISH_COLORS.Uncommon
-    if math.abs(color.R - uncommonColor.r) < threshold and
-       math.abs(color.G - uncommonColor.g) < threshold and
-       math.abs(color.B - uncommonColor.b) < threshold then
-        return "Uncommon"
-    end
-    
-    -- Check Rare
+    local threshold = 0.05 -- threshold cukup besar agar warna minor tetap terdeteksi
+
     local rareColor = FISH_COLORS.Rare
-    if math.abs(color.R - rareColor.r) < threshold and
+    if rareColor and
+       math.abs(color.R - rareColor.r) < threshold and
        math.abs(color.G - rareColor.g) < threshold and
        math.abs(color.B - rareColor.b) < threshold then
         return "Rare"
     end
-    
-    return nil
+
+    return nil -- Uncommon & Common dianggap nil → tetap ditangkap
 end
 
 -- Cancel fishing
