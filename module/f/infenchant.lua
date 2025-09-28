@@ -85,11 +85,11 @@ local starterRodUUID = nil
 
 -- Fish rarity colors
 local FISH_COLORS = {
-    Uncommon = {
-        r = 0.76470589637756,
-        g = 1,
-        b = 0.33333334326744
-    },
+    -- Uncommon = {
+        -- r = 0.76470589637756,
+        -- g = 1,
+        -- b = 0.33333334326744
+    -- },
     Rare = {
         r = 0.33333334326744,
         g = 0.63529413938522,
@@ -99,8 +99,8 @@ local FISH_COLORS = {
 
 -- Fast mode config
 local FAST_CONFIG = {
-    chargeTime = 1.0,
-    waitBetween = 0,
+    chargeTime = 2,
+    waitBetween = 1,
     rodSlot = 1,
     spamDelay = 0.05,
     maxSpamTime = 30,
