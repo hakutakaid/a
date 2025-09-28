@@ -229,45 +229,44 @@ function AutoFishFeature:SpamFishingLoop()
     end)
 end
 
--- Execute spam-based fishing sequence with delays & animations
 function AutoFishFeature:ExecuteSpamFishingSequence()
     local config = FISHING_CONFIGS[currentMode]
-    
+
     -- Step 1: Equip rod
     if not self:EquipRod(config.rodSlot) then
         return false
     end
 
-    -- Step 2: Cast rod
-    self:PlayAnimation(CAST_ANIM_ID)
-    task.wait(0.2) -- sesuai durasi cast
+    -- Step 2: Cast rod animation
+    local castTrack = self:PlayAnimation(CAST_ANIM_ID)
+    task.wait(0.2) -- delay kecil agar animasi mulai terlihat
 
-    -- Step 3: Charge rod
+    -- Step 3: Charge rod (tunggu sesuai config)
     if not self:ChargeRod(config.chargeTime) then
+        if castTrack then castTrack:Stop() end
         return false
     end
-    task.wait(config.chargeTime) -- delay sesuai charge
 
-    -- Step 4: Reel animation / tug
-    self:PlayAnimation(REEL_ANIM_ID)
-    
-    -- Step 5: Cast rod (remote)
+    -- Step 4: Cast rod remote
     if not self:CastRod() then
+        if castTrack then castTrack:Stop() end
         return false
     end
 
-    -- Step 6: Slow mode minigame animation
-    if currentMode == "Slow" and not config.skipMinigame then
-        self:PlayAnimation(MINIGAME_ANIM_ID)
-        task.wait(config.minigameDuration)
+    -- Step 5: Reel / Tug animation (Fast & Slow mode)
+    local reelTrack
+    if not config.skipMinigame then
+        reelTrack = self:PlayAnimation(CAST_ANIM_ID) -- bisa pakai anim reel berbeda kalau ada
+        task.wait(config.minigameDuration or 1) -- tunggu animasi minigame
     end
 
-    -- Step 7: Start completion spam
+    -- Step 6: Start completion spam
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
 
-    -- Step 8: Idle setelah selesai
+    -- Step 7: Stop reel/cast anim dan ganti ke idle
+    if castTrack then castTrack:Stop() end
+    if reelTrack then reelTrack:Stop() end
     self:PlayAnimation(IDLE_ANIM_ID)
-    task.wait(0.2) -- delay idle
 
     return true
 end
