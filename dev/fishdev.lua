@@ -2000,3 +2000,29 @@ task.defer(function()
         Duration = 3
     })
 end)
+
+-- ====== Simple Animator Script ======
+-- Pastikan dijalankan di environment client (Delta Executor)
+
+-- Ganti dengan asset animasimu
+local ANIMATION_ID = "rbxassetid://134965425664034"
+
+-- Dapatkan karakter pemain lokal
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Cek apakah Animator sudah ada
+local animator = humanoid:FindFirstChildOfClass("Animator")
+if not animator then
+    animator = Instance.new("Animator")
+    animator.Parent = humanoid
+end
+
+-- Buat Animation Instance
+local animation = Instance.new("Animation")
+animation.AnimationId = ANIMATION_ID
+
+-- Load dan mainkan animasi
+local animationTrack = animator:LoadAnimation(animation)
+animationTrack:Play() -- main sekali saja
