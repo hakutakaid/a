@@ -1917,7 +1917,7 @@ end
 local antiafk_tgl = OtherBox:AddToggle("antiafk", {
     Text = "Anti Afk",
     Tooltip = "",
-    Default = false,
+    Default = false,  -- tetap false di awal
     Callback = function(Value)
         if Value then
             -- Ketika toggle ON
@@ -1932,6 +1932,10 @@ local antiafk_tgl = OtherBox:AddToggle("antiafk", {
         end
     end
 })
+
+-- Auto centang toggle saat script dijalankan
+antiafk_tgl:SetValue(true)  -- otomatis memanggil callback di atas
+
 if antiafkFeature then
     antiafkFeature.__controls = {
         Toggle = antiafk_tgl
