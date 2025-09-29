@@ -148,7 +148,6 @@ function AutoFishV3:Init(guiControls)
     return true
 end
 
--- Enhanced FindStarterRod with better logging
 function AutoFishV3:FindStarterRod()
     if not inventoryWatcher then
         logger:warn("InventoryWatcher not available")
@@ -163,15 +162,16 @@ function AutoFishV3:FindStarterRod()
         local rodUUID = rod.UUID or rod.Uuid or rod.uuid
         logger:info("Rod", i, "- ID:", rodId, "UUID:", rodUUID)
 
-        -- Look for Starter Rod (ID = 1)
-        if rodId == 1 or tostring(rodId) == "1" then
+        local TARGET_ROD_ID = 13
+
+        if rodId == TARGET_ROD_ID or tostring(rodId) == tostring(TARGET_ROD_ID) then
             starterRodUUID = rodUUID
-            logger:info("Found Starter Rod! UUID:", starterRodUUID)
+            logger:info("Found TARGET Rod! ID:", TARGET_ROD_ID, "UUID:", starterRodUUID)
             return
         end
     end
 
-    logger:warn("Starter Rod (ID=1) not found in inventory")
+    logger:warn("Target Rod (ID="..TARGET_ROD_ID..") not found in inventory")
 end
 
 -- Setup original rod caching system
