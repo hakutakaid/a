@@ -254,7 +254,7 @@ function AutoFishFeature:ExecuteSpamFishingSequence()
         return false
     end
     
-    self:PlayAnimation("rbxassetid://134965425664034") -- ganti sesuai animasi yang mau dicoba
+    self:PlayAnimation("rbxassetid://126831815839724") -- ganti sesuai animasi yang mau dicoba
 
     -- Step 4: Start completion spam with mode-specific behavior
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
