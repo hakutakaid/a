@@ -13,18 +13,6 @@ local logger = _G.Logger and _G.Logger.new("AutoFish") or {
     error = function() end
 }
 
--- ===========================================================
--- [ANIMASI] RBX Asset ID
--- ===========================================================
--- ===========================================================
--- [ANIMASI] RBX Asset ID
--- ===========================================================
-local CAST_ANIM_ID     = "rbxassetid://134965425664034" -- Cast / Reel
-local IDLE_ANIM_ID     = "rbxassetid://134965425664034" -- Idle
-local REEL_ANIM_ID     = "rbxassetid://134965425664034" -- Reel / Tug (buat contoh)
-local MINIGAME_ANIM_ID = "rbxassetid://134965425664034" -- Slow mode tap-tap
-
-
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")  
@@ -140,30 +128,28 @@ end
 -- Stop fishing
 function AutoFishFeature:Stop()
     if not isRunning then return end
+    
     isRunning = false
     fishingInProgress = false
     spamActive = false
     completionCheckActive = false
     fishCaughtFlag = false
     
-    if connection then connection:Disconnect() connection = nil end
-    if spamConnection then spamConnection:Disconnect() spamConnection = nil end
-    if fishObtainedConnection then fishObtainedConnection:Disconnect() fishObtainedConnection = nil end
-
-    -- Stop semua animasi
-    local char = LocalPlayer.Character
-    if char then
-        local humanoid = char:FindFirstChild("Humanoid")
-        if humanoid then
-            local animator = humanoid:FindFirstChildOfClass("Animator")
-            if animator then
-                for _, t in pairs(animator:GetPlayingAnimationTracks()) do
-                    t:Stop()
-                end
-            end
-        end
+    if connection then
+        connection:Disconnect()
+        connection = nil
     end
-
+    
+    if spamConnection then
+        spamConnection:Disconnect()
+        spamConnection = nil
+    end
+    
+    if fishObtainedConnection then
+        fishObtainedConnection:Disconnect()
+        fishObtainedConnection = nil
+    end
+    
     logger:info("Stopped SPAM method")
 end
 
@@ -229,45 +215,30 @@ function AutoFishFeature:SpamFishingLoop()
     end)
 end
 
+-- Execute spam-based fishing sequence
 function AutoFishFeature:ExecuteSpamFishingSequence()
     local config = FISHING_CONFIGS[currentMode]
-
+    
     -- Step 1: Equip rod
     if not self:EquipRod(config.rodSlot) then
         return false
     end
+    
+    task.wait(0.1)
 
-    -- Step 2: Cast rod animation
-    local castTrack = self:PlayAnimation(CAST_ANIM_ID)
-    task.wait(0.2) -- delay kecil agar animasi mulai terlihat
-
-    -- Step 3: Charge rod (tunggu sesuai config)
+    -- Step 2: Charge rod
     if not self:ChargeRod(config.chargeTime) then
-        if castTrack then castTrack:Stop() end
         return false
     end
-
-    -- Step 4: Cast rod remote
+    
+    -- Step 3: Cast rod
     if not self:CastRod() then
-        if castTrack then castTrack:Stop() end
         return false
     end
 
-    -- Step 5: Reel / Tug animation (Fast & Slow mode)
-    local reelTrack
-    if not config.skipMinigame then
-        reelTrack = self:PlayAnimation(CAST_ANIM_ID) -- bisa pakai anim reel berbeda kalau ada
-        task.wait(config.minigameDuration or 1) -- tunggu animasi minigame
-    end
-
-    -- Step 6: Start completion spam
+    -- Step 4: Start completion spam with mode-specific behavior
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
-
-    -- Step 7: Stop reel/cast anim dan ganti ke idle
-    if castTrack then castTrack:Stop() end
-    if reelTrack then reelTrack:Stop() end
-    self:PlayAnimation(IDLE_ANIM_ID)
-
+    
     return true
 end
 
@@ -467,31 +438,6 @@ function AutoFishFeature:Cleanup()
     self:Stop()
     controls = {}
     remotesInitialized = false
-end
-
--- ===========================================================
--- [ANIMASI] Helper play animation
--- ===========================================================
-function AutoFishFeature:PlayAnimation(animId)
-    local char = LocalPlayer.Character
-    if not char then return end
-    local humanoid = char:FindFirstChild("Humanoid")
-    if not humanoid then return end
-
-    local animator = humanoid:FindFirstChildOfClass("Animator")
-        or Instance.new("Animator", humanoid)
-
-    -- Stop semua track
-    for _, t in pairs(animator:GetPlayingAnimationTracks()) do
-        t:Stop()
-    end
-
-    -- Play animation baru
-    local animation = Instance.new("Animation")
-    animation.AnimationId = animId
-    local track = animator:LoadAnimation(animation)
-    track:Play()
-    return track
 end
 
 return AutoFishFeature
