@@ -80,6 +80,26 @@ local FISHING_CONFIGS = {
     }
 }
 
+-- Play an animation once
+function AutoFishFeature:PlayAnimation(animId)
+    if not LocalPlayer.Character then return end
+    local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    
+    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+    
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animId
+    
+    local track = animator:LoadAnimation(animation)
+    track:Play()
+    
+    track.Stopped:Connect(function()
+        -- Animasi selesai
+    end)
+end
+
+
 -- Initialize
 function AutoFishFeature:Init(guiControls)
     controls = guiControls or {}
@@ -235,6 +255,8 @@ function AutoFishFeature:ExecuteSpamFishingSequence()
     if not self:CastRod() then
         return false
     end
+    
+    self:PlayAnimation("rbxassetid://134965425664034") -- ganti sesuai animasi yang mau dicoba
 
     -- Step 4: Start completion spam with mode-specific behavior
     self:StartCompletionSpam(config.spamDelay, config.maxSpamTime)
