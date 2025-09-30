@@ -21,7 +21,7 @@ local logger = _G.Logger and _G.Logger.new("AutoFish") or {
 -- ===========================================================
 local CAST_ANIM_ID     = "rbxassetid://96586569072385" -- Cast / Reel
 local IDLE_ANIM_ID     = "rbxassetid://134965425664034" -- Idle
-local REEL_ANIM_ID     = "rbxassetid://123456789012345" -- Reel / Tug (buat contoh)
+local REEL_ANIM_ID     = "rbxassetid://114959536562596" -- Reel / Tug (buat contoh)
 local MINIGAME_ANIM_ID = "rbxassetid://234567890123456" -- Slow mode tap-tap
 
 
