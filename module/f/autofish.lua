@@ -185,16 +185,23 @@ function AutoFishFeature:ExecuteAnimatedFishingSequence()
     local success = pcall(function()
         EquipTool:FireServer(config.rodSlot)
         if loadedAnimations.HoldIdle then loadedAnimations.HoldIdle:Play() end
-        
         task.wait(0.2)
         
         if loadedAnimations.HoldIdle then loadedAnimations.HoldIdle:Stop() end
-        if loadedAnimations.Cast then loadedAnimations.Cast:Play() end
+        
+        -- Mainkan animasi Cast
+        if loadedAnimations.Cast then 
+            loadedAnimations.Cast:Play() 
+        end
         
         ChargeFishingRod:InvokeServer(perfectCast and 9e9 or tick())
         
-        if loadedAnimations.Cast then loadedAnimations.Cast.Stopped:Wait() end
+        -- Tunggu event animasi selesai, bukan menjeda paksa
+        if loadedAnimations.Cast then 
+            loadedAnimations.Cast.Ended:Wait() 
+        end
         
+        -- Lanjutkan sisa logika setelah animasi selesai
         if loadedAnimations.Waiting then loadedAnimations.Waiting:Play() end
         
         local x = perfectCast and -1.238 or math.random()
@@ -211,7 +218,7 @@ function AutoFishFeature:ExecuteAnimatedFishingSequence()
 
         if loadedAnimations.Catch then loadedAnimations.Catch:Play() end
         
-        for i = 1, 5 do
+        for i = 1, 3 do
             if not isRunning then break end
             FishingCompleted:FireServer()
             task.wait(0.1)
