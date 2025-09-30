@@ -80,25 +80,23 @@ local FISHING_CONFIGS = {
     }
 }
 
--- Play an animation once
 function AutoFishFeature:PlayAnimation(animId)
     if not LocalPlayer.Character then return end
     local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
     if not humanoid then return end
-    
-    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-    
+
+    local animator = humanoid:FindFirstChildOfClass("Animator")
+    if not animator then
+        animator = Instance.new("Animator")
+        animator.Parent = humanoid
+    end
+
     local animation = Instance.new("Animation")
     animation.AnimationId = animId
-    
+
     local track = animator:LoadAnimation(animation)
     track:Play()
-    
-    track.Stopped:Connect(function()
-        -- Animasi selesai
-    end)
 end
-
 
 -- Initialize
 function AutoFishFeature:Init(guiControls)
