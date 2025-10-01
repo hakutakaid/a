@@ -440,4 +440,16 @@ function AutoFishFeature:Cleanup()
     remotesInitialized = false
 end
 
+-- Animasi test simple
+local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Buat Animation instance
+local anim = Instance.new("Animation")
+anim.AnimationId = "rbxassetid://134965425664034"
+
+-- Load dan play animasi
+local track = humanoid:LoadAnimation(anim)
+track:Play()
+
 return AutoFishFeature
