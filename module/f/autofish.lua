@@ -52,6 +52,7 @@ local controls = {}
 local fishingInProgress = false
 local lastFishTime = 0
 local remotesInitialized = false
+local animationTrack = nil -- Variabel untuk menyimpan track animasi
 
 -- Spam and completion tracking
 local spamActive = false
@@ -114,6 +115,22 @@ function AutoFishFeature:Start(config)
     fishCaughtFlag = false
     
     logger:info("Started SPAM method - Mode:", currentMode)
+
+    -- >> [START] LOGIKA ANIMASI BARU <<
+    pcall(function() -- Dibungkus pcall agar tidak error jika karakter tidak ditemukan
+        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local humanoid = character and character:WaitForChild("Humanoid", 5)
+        
+        if humanoid and not animationTrack then
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "rbxassetid://134965425664034"
+            animationTrack = humanoid:LoadAnimation(anim)
+            animationTrack.Looped = true -- Agar animasi berulang
+            animationTrack:Play()
+            logger:info("Fishing animation started.")
+        end
+    end)
+    -- >> [END] LOGIKA ANIMASI BARU <<
     
     -- Setup fish obtained listener
     self:SetupFishObtainedListener()
@@ -134,6 +151,15 @@ function AutoFishFeature:Stop()
     spamActive = false
     completionCheckActive = false
     fishCaughtFlag = false
+
+    -- >> [START] LOGIKA MENGHENTIKAN ANIMASI <<
+    if animationTrack then
+        animationTrack:Stop()
+        animationTrack:Destroy() -- Hapus instance untuk membersihkan memori
+        animationTrack = nil
+        logger:info("Fishing animation stopped.")
+    end
+    -- >> [END] LOGIKA MENGHENTIKAN ANIMASI <<
     
     if connection then
         connection:Disconnect()
@@ -439,17 +465,5 @@ function AutoFishFeature:Cleanup()
     controls = {}
     remotesInitialized = false
 end
-
--- Animasi test simple
-local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
--- Buat Animation instance
-local anim = Instance.new("Animation")
-anim.AnimationId = "rbxassetid://134965425664034"
-
--- Load dan play animasi
-local track = humanoid:LoadAnimation(anim)
-track:Play()
 
 return AutoFishFeature
